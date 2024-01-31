@@ -12,6 +12,9 @@
       "@/lib/*": [
         "src/lib/*"
       ],
+      "@/directives/*": [
+        "src/directives/*"
+      ],
     },
     "jsx": "preserve"
   }
