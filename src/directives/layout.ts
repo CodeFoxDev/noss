@@ -1,4 +1,4 @@
-import type { CSSProperties, StyleValue } from 'vue';
+import type { CSSProperties, HTMLAttributes, StyleValue, Directive } from 'vue';
 
 export interface Props {
   direction?: 'horizontal' | 'vertical';
@@ -16,15 +16,18 @@ export const defaults: Props = {
   pad: '0',
 };
 
-export function layout(props: Props): StyleValue {
+export function layout(props: Props): HTMLAttributes {
+  props.direction ??= 'horizontal';
   const direction = props.direction === 'horizontal' ? 'row' : 'column';
 
   return {
-    display: 'flex',
-    'flex-direction': direction,
-    'align-items': props.alignItems,
-    'justify-content': props.justifyContent,
-    gap: props.gap,
-    padding: props.pad,
+    style: {
+      display: 'flex',
+      'flex-direction': direction,
+      'align-items': props.alignItems,
+      'justify-content': props.justifyContent,
+      gap: props.gap,
+      padding: props.pad,
+    },
   };
 }

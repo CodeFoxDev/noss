@@ -6,9 +6,8 @@ import { layout } from '@/directives/layout';
 <template>
   <div
     class="top"
-    :style="
+    v-bind="
       layout({
-        direction: 'horizontal',
         pad: '8px',
         gap: '8px',
         alignItems: 'center',

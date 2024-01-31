@@ -6,14 +6,13 @@ import { layout } from '@/directives/layout';
 <template>
   <div
     class="top"
-    :style="
+    v-bind:style="
       layout({
-        direction: 'horizontal',
         pad: '8px',
         gap: '8px',
         alignItems: 'center',
         justifyContent: 'space-between',
-      })
+      }).style
     "
   >
     <h3 class="title" style="padding: 0.5rem">Explorer</h3>
