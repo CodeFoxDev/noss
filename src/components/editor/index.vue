@@ -4,8 +4,12 @@ import type { Directive } from 'vue';
 import { ref } from 'vue';
 import { layout } from '@/directives/layout';
 import Layout from '@/components/Layout.vue';
+import Surface from '@/components/Surface.vue';
+import Icon from '@/components/Icon.vue';
 import Workspace from './Workspace.vue';
-import Toolbar from './Toolbar.vue';
+
+import Explorer from './tabs/Explorer.vue';
+import Search from './tabs/Search.vue';
 
 // Pass this to children?
 const tabs = ref<Tabs>('explorer');
@@ -19,16 +23,56 @@ const tabs = ref<Tabs>('explorer');
     >
       <Workspace />
       <div
-        class="activity"
-        :style="layout({ gap: '4px' })"
-        style="height: 100%; width: 3.5rem"
+        class="current"
+        :style="layout({ direction: 'horizontal', gap: '4px' })"
+        style="height: 100%; width: 100%"
       >
-        <Toolbar />
+        <Surface
+          class="toolbar"
+          :style="
+            layout({ direction: 'vertical', justifyContent: 'space-between' })
+          "
+          style="height: 100%; width: 3.5rem"
+        >
+          <Layout :direction="'vertical'" :gap="'8px'" :pad="'8px'">
+            <Icon
+              :icon="'folder'"
+              @click="tabs = 'explorer'"
+              :active="tabs === 'explorer'"
+            />
+            <Icon
+              :icon="'search'"
+              @click="tabs = 'search'"
+              :active="tabs === 'search'"
+            />
+            <Icon
+              :icon="'error'"
+              @click="tabs = 'issue'"
+              :active="tabs === 'issue'"
+            />
+          </Layout>
+          <Layout :direction="'vertical'" :gap="'8px'" :pad="'8px'">
+            <Icon :icon="'notifications'" />
+            <Icon :icon="'settings'" />
+          </Layout>
+        </Surface>
+        <Surface
+          class="activity"
+          :style="layout({ direction: 'vertical' })"
+          style="height: 100%; width: 100%"
+        >
+          <Explorer v-if="tabs === 'explorer'" />
+          <Search v-else-if="tabs === 'search'" />
+        </Surface>
       </div>
     </nav>
     <main></main>
   </Layout>
 </template>
 
-<style scoped></style>
-src/directives/layout
+<style scoped>
+h3.title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+</style>

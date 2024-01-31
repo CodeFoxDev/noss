@@ -1,0 +1,27 @@
+:root {
+  --background: #181a1b;
+  --surface: #242728;
+  --hover: #313435;
+  --active: #3e4142;
+  --text: #c7c7c7;
+  --accent: #5566b8; /* This should be editable by user */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--text);
+  font-family: "Poppins", sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+h1, h2, h3, h4 ,h5 ,h6, p {
+  margin: 0;
+}

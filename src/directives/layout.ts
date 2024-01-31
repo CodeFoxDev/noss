@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'vue';
+import type { CSSProperties, StyleValue } from 'vue';
 
 export interface Props {
   direction?: 'horizontal' | 'vertical';
@@ -16,7 +16,7 @@ export const defaults: Props = {
   pad: '0',
 };
 
-export function layout(props: Props) {
+export function layout(props: Props): StyleValue {
   const direction = props.direction === 'horizontal' ? 'row' : 'column';
 
   return {

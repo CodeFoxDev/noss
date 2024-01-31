@@ -1,7 +1,7 @@
 {
   "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "baseUrl": "C:/Users/Robin/Documents/Programming/Web/noss",
+    "baseUrl": ".",
     "paths": {
       "@/layouts/*": [
         "src/layouts/*"
