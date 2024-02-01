@@ -35,7 +35,7 @@ const toggleCollapse = () => {
 </script>
 
 <template>
-  <Layout :direction="'horizontal'">
+  <Layout :direction="'horizontal'" style="height: 100vh; width: 100vw">
     <nav
       v-bind="layout({ direction: 'vertical', gap: '4px', pad: '4px' })"
       :style="{ width: collapsed === true ? '64px' : `${defaultNavWidth}px` }"
@@ -122,6 +122,7 @@ const toggleCollapse = () => {
 <style scoped>
 nav {
   transition: width 0.3s ease;
+  flex-shrink: 0;
 }
 
 .workspace {
@@ -145,5 +146,15 @@ nav {
   width: 1.5rem;
   height: 1.5rem;
   background: var(--accent);
+}
+
+main {
+  width: 100%;
+  height: 100%;
+  & .topbar {
+    height: 4rem;
+    width: 100%;
+    background: var(--surface);
+  }
 }
 </style>
