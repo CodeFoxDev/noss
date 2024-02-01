@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Icon from '@/components/Icon.vue';
+import IconButton from '@/components/editor/IconButton.vue';
 import { layout } from '@/directives/layout';
 </script>
 
@@ -16,7 +16,7 @@ import { layout } from '@/directives/layout';
     "
   >
     <h3 class="title" style="padding: 0.5rem">Search</h3>
-    <Icon :icon="'add'" />
+    <IconButton :icon="'add'" />
   </div>
   <div class="content"></div>
 </template>

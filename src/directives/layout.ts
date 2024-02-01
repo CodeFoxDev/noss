@@ -16,18 +16,19 @@ export const defaults: Props = {
   pad: '0',
 };
 
-export function layout(props: Props): HTMLAttributes {
-  props.direction ??= 'horizontal';
+export function layout(props?: Props): HTMLAttributes {
+  props ??= {};
+  props.direction ??= defaults.direction;
   const direction = props.direction === 'horizontal' ? 'row' : 'column';
 
   return {
     style: {
       display: 'flex',
       'flex-direction': direction,
-      'align-items': props.alignItems,
-      'justify-content': props.justifyContent,
-      gap: props.gap,
-      padding: props.pad,
+      'align-items': props.alignItems ?? defaults.alignItems,
+      'justify-content': props.justifyContent ?? defaults.justifyContent,
+      gap: props.gap ?? defaults.gap,
+      padding: props.pad ?? defaults.pad,
     },
   };
 }

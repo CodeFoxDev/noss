@@ -1,8 +1,8 @@
 ---
 import Page from '@/layouts/page.astro';
-import Editor from '@/components/editor/Page.vue';
+import Editor from './_index.vue';
 ---
 
 <Page title="Index">
-  <Editor client:load />
+  <Editor client:only />
 </Page>
