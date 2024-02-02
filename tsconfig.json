@@ -1,19 +1,19 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
       "@/layouts/*": [
-        "src/layouts/*"
+        "layouts/*"
       ],
       "@/components/*": [
-        "src/components/*"
+        "components/*"
+      ],
+      "@/composables/*": [
+        "composables/*"
       ],
       "@/lib/*": [
         "src/lib/*"
-      ],
-      "@/directives/*": [
-        "src/directives/*"
       ],
     },
     "jsx": "preserve"

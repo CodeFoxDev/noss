@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { layout } from '@/directives/layout';
+import { layout } from '@/composables/layout';
 import { Button, Icon, Layout, Surface, Padding } from '@/components/index.vue';
 import IconButton from '@/components/editor/IconButton.vue';
 
@@ -8,7 +8,6 @@ import Explorer from '@/components/editor/tabs/Explorer.vue';
 import Search from '@/components/editor/tabs/Search.vue';
 
 type Tabs = 'explorer' | 'search' | 'version_control' | 'issue';
-console.log(import.meta.env.PUBLIC_API_ORIGIN);
 
 // Pass this to children?
 const tabs = ref<Tabs>('explorer');

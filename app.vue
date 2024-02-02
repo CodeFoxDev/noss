@@ -1,3 +1,10 @@
+<template>
+  <div>
+    <NuxtPage />
+  </div>
+</template>
+
+<style>
 :root {
   --background: #181a1b;
   --surface: #242728;
@@ -17,11 +24,18 @@ body {
   padding: 0;
   background: var(--background);
   color: var(--text);
-  font-family: "Poppins", sans-serif;
+  font-family: 'Poppins', sans-serif;
   height: 100%;
   width: 100%;
 }
 
-h1, h2, h3, h4 ,h5 ,h6, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
   margin: 0;
 }
+</style>

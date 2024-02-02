@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import IconButton from '@/components/editor/IconButton.vue';
-import { layout } from '@/directives/layout';
+import { layout } from '@/composables/layout';
 </script>
 
 <template>

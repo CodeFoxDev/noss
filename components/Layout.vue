@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { Props } from '@/directives/layout';
-import { defaults } from '@/directives/layout';
+import type { Props } from '@/composables/layout';
+import { defaults } from '@/composables/layout';
 
 const props = withDefaults(defineProps<Props>(), defaults);
 
