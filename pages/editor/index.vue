@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { layout } from '@/composables/layout';
-import { Button, Icon, Layout, Surface, Padding } from '@/components/index.vue';
-import IconButton from '@/components/editor/IconButton.vue';
 
 import Explorer from '@/components/editor/tabs/Explorer.vue';
 import Search from '@/components/editor/tabs/Search.vue';
@@ -48,162 +46,165 @@ onMounted(() => {
 </script>
 
 <template>
-  <Layout direction="horizontal" style="height: 100vh; width: 100vw">
-    <nav
-      v-bind="layout({ direction: 'vertical', gap: '4px', pad: '4px' })"
-      :style="{ width: collapsed === true ? '64px' : `${defaultNavWidth}px` }"
-      style="height: 100vh"
-    >
-      <Surface
-        class="workspace"
-        v-bind="layout({ pad: '8px', gap: '8px', alignItems: 'end' })"
+  <ClientOnly>
+    <Layout direction="horizontal" style="height: 100vh; width: 100vw">
+      <nav
+        v-bind="layout({ direction: 'vertical', gap: '4px', pad: '4px' })"
+        :style="{ width: collapsed === true ? '64px' : `${defaultNavWidth}px` }"
+        style="height: 100vh"
       >
-        <div
-          class="workspace_select"
-          v-show="!collapsed"
-          v-bind="layout({ justifyContent: 'space-between' })"
-          style="width: 100%; overflow: hidden"
-        >
-          <Layout :pad="'8px'" :gap="'8px'" :align-items="'center'">
-            <div class="workspace_icon"></div>
-            <p class="bold">Noss</p>
-          </Layout>
-          <IconButton
-            :icon="'expand_more'"
-            :hover="false"
-            :style="`rotate: ${collapsed === true ? '180deg' : '0deg'}`"
-          />
-        </div>
-        <IconButton :icon="'keyboard_double_arrow_left'" @click="toggleNav" />
-      </Surface>
-      <div
-        class="current"
-        v-bind="layout({ gap: '4px' })"
-        style="height: 100%; width: 100%"
-      >
+        <!-- Make the right side of nav resizeable -->
         <Surface
-          class="toolbar"
-          v-bind="
-            layout({ direction: 'vertical', justifyContent: 'space-between' })
-          "
-          style="height: 100%; width: 3.5rem"
+          class="workspace"
+          v-bind="layout({ pad: '8px', gap: '8px', alignItems: 'end' })"
         >
-          <Layout :direction="'vertical'" :gap="'8px'" :pad="'8px'">
+          <div
+            class="workspace_select"
+            v-show="!collapsed"
+            v-bind="layout({ justifyContent: 'space-between' })"
+            style="width: 100%; overflow: hidden"
+          >
+            <Layout :pad="'8px'" :gap="'8px'" :align-items="'center'">
+              <div class="workspace_icon"></div>
+              <p class="bold">Noss</p>
+            </Layout>
             <IconButton
-              :icon="'folder'"
-              @click="updateTab('explorer')"
-              :active="tabs === 'explorer'"
+              :icon="'expand_more'"
+              :hover="false"
+              :style="`rotate: ${collapsed === true ? '180deg' : '0deg'}`"
             />
-            <IconButton
-              :icon="'search'"
-              @click="updateTab('search')"
-              :active="tabs === 'search'"
-            />
-            <IconButton
-              :src="'/icons/version_control.svg'"
-              @click="updateTab('version_control')"
-              :active="tabs === 'version_control'"
-            />
-            <IconButton
-              :icon="'error'"
-              @click="updateTab('issue')"
-              :active="tabs === 'issue'"
-            />
-          </Layout>
-          <Layout :direction="'vertical'" :gap="'8px'" :pad="'8px'">
-            <IconButton :icon="'notifications'" />
-            <IconButton :icon="'settings'" />
-          </Layout>
+          </div>
+          <IconButton :icon="'keyboard_double_arrow_left'" @click="toggleNav" />
         </Surface>
-        <Surface
-          class="activity"
-          v-bind="layout({ direction: 'vertical' })"
+        <div
+          class="current"
+          v-bind="layout({ gap: '4px' })"
           style="height: 100%; width: 100%"
         >
-          <div v-if="collapsed === true"></div>
-          <Explorer v-else-if="tabs === 'explorer'" />
-          <Search v-else-if="tabs === 'search'" />
-        </Surface>
-      </div>
-    </nav>
-    <main v-bind="layout({ direction: 'vertical' })">
-      <div
-        class="topbar"
-        v-bind="
-          layout({
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: '8px',
-            pad: '4px',
-          })
-        "
-      >
-        <div
-          class="path"
-          v-bind="layout({ alignItems: 'center', gap: '4px', pad: '8px' })"
-        >
-          <span class="home">
-            <div class="icon"></div>
-          </span>
-          <span class="segment">
-            <p>Noss</p>
-          </span>
-          <Icon :icon="'chevron_right'" :hover="false" />
-          <span class="segment">
-            <p>Design</p>
-          </span>
-          <Icon :icon="'chevron_right'" :hover="false" />
-          <span class="segment">
-            <p>Editor</p>
-          </span>
+          <Surface
+            class="toolbar"
+            v-bind="
+              layout({ direction: 'vertical', justifyContent: 'space-between' })
+            "
+            style="height: 100%; width: 3.5rem"
+          >
+            <Layout :direction="'vertical'" :gap="'8px'" :pad="'8px'">
+              <IconButton
+                :icon="'folder'"
+                @click="updateTab('explorer')"
+                :active="tabs === 'explorer'"
+              />
+              <IconButton
+                :icon="'search'"
+                @click="updateTab('search')"
+                :active="tabs === 'search'"
+              />
+              <IconButton
+                :src="'/icons/version_control.svg'"
+                @click="updateTab('version_control')"
+                :active="tabs === 'version_control'"
+              />
+              <IconButton
+                :icon="'error'"
+                @click="updateTab('issue')"
+                :active="tabs === 'issue'"
+              />
+            </Layout>
+            <Layout :direction="'vertical'" :gap="'8px'" :pad="'8px'">
+              <IconButton :icon="'notifications'" />
+              <IconButton :icon="'settings'" />
+            </Layout>
+          </Surface>
+          <Surface
+            class="activity"
+            v-bind="layout({ direction: 'vertical' })"
+            style="height: 100%; width: 100%"
+          >
+            <div v-if="collapsed === true"></div>
+            <Explorer v-else-if="tabs === 'explorer'" />
+            <Search v-else-if="tabs === 'search'" />
+          </Surface>
         </div>
+      </nav>
+      <main v-bind="layout({ direction: 'vertical' })">
         <div
-          class="buttons"
+          class="topbar"
           v-bind="
             layout({
               alignItems: 'center',
-              justifyContent: 'end',
+              justifyContent: 'space-between',
               gap: '8px',
-              pad: '8px',
+              pad: '4px',
             })
           "
         >
-          <Button>Share</Button>
-          <IconButton icon="comment" @click="toggleSecondary" />
-          <IconButton icon="more_horiz" />
+          <div
+            class="path"
+            v-bind="layout({ alignItems: 'center', gap: '4px', pad: '8px' })"
+          >
+            <span class="home">
+              <div class="icon"></div>
+            </span>
+            <span class="segment">
+              <p>Noss</p>
+            </span>
+            <Icon :icon="'chevron_right'" :hover="false" />
+            <span class="segment">
+              <p>Design</p>
+            </span>
+            <Icon :icon="'chevron_right'" :hover="false" />
+            <span class="segment">
+              <p>Editor</p>
+            </span>
+          </div>
+          <div
+            class="buttons"
+            v-bind="
+              layout({
+                alignItems: 'center',
+                justifyContent: 'end',
+                gap: '8px',
+                pad: '8px',
+              })
+            "
+          >
+            <Button>Share</Button>
+            <IconButton icon="comment" @click="toggleSecondary" />
+            <IconButton icon="more_horiz" />
+          </div>
         </div>
-      </div>
-      <div class="editor" v-bind="layout()">
-        <div class="open"></div>
-        <Padding
-          class="secondary"
-          :style="{
-            width: secondaryCollapsed ? '0px' : '320px',
-            'flex-shrink': 0,
-          }"
-        >
-          <Surface fill>
-            <div class="content">
-              <div
-                class="top"
-                v-bind="
-                  layout({
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '8px',
-                    pad: '8px',
-                  })
-                "
-              >
-                <h3 class="title" style="padding-inline: 0.5rem">Comments</h3>
-                <IconButton icon="close" @click="toggleSecondary" />
+        <div class="editor" v-bind="layout()">
+          <div class="open"></div>
+          <Padding
+            class="secondary"
+            :style="{
+              width: secondaryCollapsed ? '0px' : '320px',
+              'flex-shrink': 0,
+            }"
+          >
+            <Surface fill>
+              <div class="content">
+                <div
+                  class="top"
+                  v-bind="
+                    layout({
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '8px',
+                      pad: '8px',
+                    })
+                  "
+                >
+                  <h3 class="title" style="padding-inline: 0.5rem">Comments</h3>
+                  <IconButton icon="close" @click="toggleSecondary" />
+                </div>
               </div>
-            </div>
-          </Surface>
-        </Padding>
-      </div>
-    </main>
-  </Layout>
+            </Surface>
+          </Padding>
+        </div>
+      </main>
+    </Layout>
+  </ClientOnly>
 </template>
 
 <style scoped>

@@ -13,8 +13,11 @@
         "composables/*"
       ],
       "@/lib/*": [
-        "src/lib/*"
+        "lib/*"
       ],
+      "@/*": [
+        "*"
+      ]
     },
     "jsx": "preserve"
   }

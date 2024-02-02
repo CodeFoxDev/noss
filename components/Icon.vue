@@ -3,10 +3,12 @@ const props = withDefaults(
   defineProps<{
     icon?: string;
     src?: string;
+    size?: string;
   }>(),
   {
     icon: 'menu',
     src: '',
+    size: '1.5rem',
   }
 );
 </script>
@@ -14,23 +16,29 @@ const props = withDefaults(
 <template>
   <div class="icon">
     <img v-if="props.src !== ''" :src="props.src" alt="" />
-    <span v-else class="material-symbols-rounded">
+    <span
+      v-else
+      class="material-symbols-rounded"
+      :style="{ fontSize: $props.size }"
+    >
       {{ props.icon }}
     </span>
   </div>
 </template>
 
 <style scoped>
-div.icon {
-  width: 1.5rem;
-  height: 1.5rem;
+div.icon,
+span,
+img,
+svg {
+  width: v-bind('$props.size');
+  height: v-bind('$props.size');
+  text-align: center;
 }
 
 span,
 img,
 svg {
-  width: 1.5rem;
-  height: 1.5rem;
   text-align: center;
   user-select: none;
   -webkit-user-select: none;
