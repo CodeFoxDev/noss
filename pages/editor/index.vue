@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { layout } from '@/composables/layout';
 
+import Editor from '@/components/editor/Editor.vue';
 import Explorer from '@/components/editor/tabs/Explorer.vue';
 import Search from '@/components/editor/tabs/Search.vue';
 
@@ -174,7 +175,9 @@ onMounted(() => {
           </div>
         </div>
         <div class="editor" v-bind="layout()">
-          <div class="open"></div>
+          <div class="open">
+            <Editor />
+          </div>
           <Padding
             class="secondary"
             :style="{
@@ -278,6 +281,8 @@ main .editor {
 
 main .editor .open {
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 main .editor .secondary {
