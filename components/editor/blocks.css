@@ -1,0 +1,10 @@
+.noss-selectable,
+.noss-selectable > * {
+  outline: none;
+}
+
+/* Heading 1 */
+.noss-header-block h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+}

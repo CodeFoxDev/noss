@@ -12,6 +12,7 @@
   --active: #3e4142;
   --text: #c7c7c7;
   --accent: #5566b8; /* This should be editable by user */
+  --accent-dim: rgba(85, 102, 184, 0.25);
 }
 
 * {
@@ -27,6 +28,7 @@ body {
   font-family: 'Poppins', sans-serif;
   height: 100%;
   width: 100%;
+  overflow-x: hidden;
 }
 
 h1,
