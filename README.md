@@ -30,6 +30,10 @@ Url for projects is similar to github
 
 # TODO
 - **Editor component**
+  - [ ] Seperate code into class to improve readability
+    - [ ] Add blocks property which are instance of `Block` class
+      - [ ] Focus method
+    - [ ] Allow for inserting new block with one function call with index
   - [ ] Seperate blocks in divs
     - [ ] Change div props on `contenteditable > insertParagrah`
     - [ ] Formatting
@@ -39,5 +43,7 @@ Url for projects is similar to github
   - [ ] Context menu when text is selected
     - [ ] Show/hide when text is selected/unselected
     - [ ] Allow changing of formatting
+  - [ ] Allow undo/redo of actions
+    - [ ] Create action stack and keep track of changes to page
 - **Viewer component**
   - [ ] Same UI as editor, but without edit features

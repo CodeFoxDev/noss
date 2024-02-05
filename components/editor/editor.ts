@@ -49,17 +49,22 @@ export function focusBlockAtChar(block: HTMLElement, index: number) {
 export function getActiveElement(): HTMLElement | null {
   const active = document.activeElement;
   if (!active) return null;
-  if (active.getAttribute('data-content-editable-leaf') === 'true')
+  if (active.getAttribute('data-content-editable-leaf') !== null)
     return active.parentElement;
   else if (active.classList.contains('noss-selectable'))
     return active as HTMLElement;
   return null;
 }
 
-export function getContentFromBlock(block: HTMLElement): string | null {
+export function getTextNodeFromBlock(block: HTMLElement): Text | null {
   const child = block.querySelector(
     '[data-content-editable-leaf]'
   ) as HTMLElement;
   if (!child) return null;
-  return child.innerHTML;
+  if (child.children[0] === child.childNodes[0]) return null;
+  return child.childNodes[0] as Text;
+}
+
+export function getContentFromBlock(block: HTMLElement): string {
+  return getTextNodeFromBlock(block)?.data ?? '';
 }

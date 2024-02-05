@@ -6,6 +6,7 @@ import {
   cleanBlock,
   focusBlock,
   getActiveElement,
+  getTextNodeFromBlock,
   getContentFromBlock,
   getChildFromBlock,
 } from './editor';
@@ -14,6 +15,8 @@ const placeholder = "Press '/' for commands";
 
 const editor = ref<HTMLDivElement>();
 const content = ref<HTMLDivElement>();
+
+useInput();
 
 const onInput = (_e: HTMLElementEventMap['input']) => {
   if (!content.value) return;
@@ -27,7 +30,6 @@ const onInput = (_e: HTMLElementEventMap['input']) => {
   const blocks = Array.from(content.value.children) as HTMLElement[];
 
   if (e.inputType === 'insertParagraph') {
-    _e.preventDefault();
     const p = t.parentElement;
     if (!p) return;
     const i = blocks.indexOf(p);
@@ -36,7 +38,14 @@ const onInput = (_e: HTMLElementEventMap['input']) => {
     const block = createBlock();
     content.value.insertBefore(block, content.value.children[i + 1]);
     focusBlock(block);
-    // TODO: Insert content into next block if enter was not at the end
+
+    // insert content
+    if (t.childNodes.length > 1) {
+      const carry = t.childNodes[1];
+      t.removeChild(carry);
+      block.children[0].appendChild(carry);
+      console.log(block);
+    }
   } //else console.log(e);
 
   // TODO: Chrome sometimes inserts content in div, and inserts new div when enter pressed, this should be fixed
@@ -46,32 +55,47 @@ const onInput = (_e: HTMLElementEventMap['input']) => {
 // TODO: Add proper error handling instead of simply returning
 const onKeydown = (e: HTMLElementEventMap['keydown']) => {
   if (!content.value) return;
+  const blocks = Array.from(content.value.children) as HTMLElement[];
+
   if (e.key === 'Backspace') {
     const select = window.getSelection();
     if (!select) return;
-    const offset = select.focusOffset;
-    if (offset === 0) {
-      // move this block's content to prev block
+    if (select.focusOffset === 0 && select.isCollapsed) {
+      // Caret is at the start of the line and nothing is selected
       const active = getActiveElement();
       if (active === null) return;
-      const blocks = Array.from(content.value.children) as HTMLElement[];
-      const newIndex = blocks.indexOf(active) - 1;
-      const editable = getChildFromBlock(blocks[newIndex]);
-      if (newIndex === -1 || !editable) return;
+      const i = blocks.indexOf(active);
+      let block =
+        blocks[i - 1] !== undefined
+          ? getTextNodeFromBlock(blocks[i - 1])
+          : null;
+      if (block === null) {
+        const text = document.createTextNode('');
+        blocks[i - 1].children[0].innerHTML = '';
+        blocks[i - 1].children[0].appendChild(text);
+        blocks[i - 1].children[0].appendChild(document.createElement('br'));
+        block = text;
+      }
 
-      for (const i of Array.from(editable.children))
-        if (i.tagName.toLowerCase() === 'br') editable.removeChild(i);
-      const focusIndex = getContentFromBlock(blocks[newIndex])?.length;
-      // Get current content to carry
       const carry = getContentFromBlock(active);
-      if (!focusIndex || !carry) return;
-      // Insert this content in previous block, along with temporary char that gets removed when focus changes
-      editable.innerHTML += carry;
+      const carryLength = carry?.length ?? 0;
+      if (carry !== '') block.data += carry;
       content.value.removeChild(active);
-      // Set focus on correct index
-      // TODO: Still removes one character
-      focusTextAtChar(editable.childNodes[0], focusIndex);
+
+      setTimeout(() => {
+        if (block === null) return;
+        // TODO: not working when text content is empty
+        focusTextAtChar(block, block.data.length - carryLength);
+      }, 0);
     }
+  } else if (e.key === 'Enter' && useInput().ctrlKeyDown === true) {
+    const active = getActiveElement();
+    console.log(active);
+    if (!active) return;
+    const i = blocks.indexOf(active);
+    const block = createBlock();
+    content.value.insertBefore(block, content.value.children[i + 1]);
+    focusBlock(block);
   }
 };
 
@@ -95,7 +119,7 @@ onUnmounted(() => {
     >
       <div class="noss-selectable noss-header-block">
         <h1 contenteditable data-content-editable-leaf>
-          Some content here, test for selection menu
+          Some content here, test for selection menu<br />
         </h1>
       </div>
     </div>

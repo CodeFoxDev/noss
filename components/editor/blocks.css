@@ -3,6 +3,11 @@
   outline: none;
 }
 
+.noss-selectable::selection,
+.noss-selectable ::selection {
+  background: var(--accent-dim);
+}
+
 /* Heading 1 */
 .noss-header-block h1 {
   font-size: 1.875rem;
