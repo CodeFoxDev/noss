@@ -9,6 +9,7 @@ import {
   getContentFromBlock,
   getChildFromBlock,
 } from './editor';
+import { focusTextAtChar } from './utils';
 const placeholder = "Press '/' for commands";
 
 const editor = ref<HTMLDivElement>();
@@ -20,8 +21,9 @@ const onInput = (_e: HTMLElementEventMap['input']) => {
   const t = e.target as HTMLElement | null;
   if (!t || t.getAttribute('data-content-editable-leaf') === null) return;
 
-  // sometimes if no <br> are present, there is a non functional character, you can move over it with arrows, but deleting it results in previous character being removed
-  cleanBlock(t);
+  for (const i of Array.from(t.children))
+    if (i.tagName.toLowerCase() === 'br') t.removeChild(i);
+
   const blocks = Array.from(content.value.children) as HTMLElement[];
 
   if (e.inputType === 'insertParagraph') {
@@ -35,9 +37,10 @@ const onInput = (_e: HTMLElementEventMap['input']) => {
     content.value.insertBefore(block, content.value.children[i + 1]);
     focusBlock(block);
     // TODO: Insert content into next block if enter was not at the end
-  } else console.log(e);
+  } //else console.log(e);
 
   // TODO: Chrome sometimes inserts content in div, and inserts new div when enter pressed, this should be fixed
+  t.appendChild(document.createElement('br'));
 };
 
 // TODO: Add proper error handling instead of simply returning
@@ -55,20 +58,19 @@ const onKeydown = (e: HTMLElementEventMap['keydown']) => {
       const newIndex = blocks.indexOf(active) - 1;
       const editable = getChildFromBlock(blocks[newIndex]);
       if (newIndex === -1 || !editable) return;
-      cleanBlock(editable);
+
+      for (const i of Array.from(editable.children))
+        if (i.tagName.toLowerCase() === 'br') editable.removeChild(i);
       const focusIndex = getContentFromBlock(blocks[newIndex])?.length;
+      // Get current content to carry
       const carry = getContentFromBlock(active);
       if (!focusIndex || !carry) return;
       // Insert this content in previous block, along with temporary char that gets removed when focus changes
-      editable.innerText += '_' + carry;
+      editable.innerHTML += carry;
       content.value.removeChild(active);
       // Set focus on correct index
-      const r = document.createRange();
-      r.setStart(editable.childNodes[0], focusIndex);
-      r.setEnd(editable.childNodes[0], focusIndex + 1);
-      const s = window.getSelection();
-      s?.removeAllRanges();
-      s?.addRange(r);
+      // TODO: Still removes one character
+      focusTextAtChar(editable.childNodes[0], focusIndex);
     }
   }
 };

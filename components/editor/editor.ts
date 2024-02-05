@@ -35,6 +35,17 @@ export function focusBlock(block: HTMLElement) {
   child.focus();
 }
 
+export function focusBlockAtChar(block: HTMLElement, index: number) {
+  const child = getChildFromBlock(block);
+  const editable = child?.childNodes[0];
+  if (!child || !editable) return;
+  const r = document.createRange();
+  r.setStart(editable, index);
+  const s = window.getSelection();
+  s?.removeAllRanges();
+  s?.addRange(r);
+}
+
 export function getActiveElement(): HTMLElement | null {
   const active = document.activeElement;
   if (!active) return null;
