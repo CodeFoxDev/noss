@@ -1,70 +1,136 @@
-import type { Format, Type } from '@/types/editor';
+import { Block } from './block';
 
-export function createBlock() {
-  const div = document.createElement('div');
-  div.className = 'noss-selectable noss-text-block';
-  const text = document.createElement('p');
-  text.setAttribute('contenteditable', 'true');
-  text.setAttribute('data-content-editable-leaf', 'true');
-  text.setAttribute('tabindex', '0');
-  div.appendChild(text);
-  return div;
-}
+/**
+ * TODO:
+ * - Implement load function to load existing page
+ */
+export class Editor {
+  root: HTMLElement;
+  content: HTMLElement;
+  blocks: Block[] = [];
 
-export function cleanBlock(block: HTMLElement) {
-  block.childNodes.forEach((e) => {
-    if (e.nodeType === 1) {
-      const _e = e as HTMLElement;
-      if (_e.tagName.toLowerCase() === 'br') block.removeChild(_e);
+  constructor(editorRef: HTMLElement) {
+    this.root = editorRef;
+    this.content = this.root.children[1] as HTMLElement;
+
+    this.root.addEventListener('input', this.#onInput.bind(this));
+    this.root.addEventListener('keydown', this.#onKeydown.bind(this));
+  }
+
+  /**
+   * Removes all event listeners
+   */
+  destruct() {
+    this.root.removeEventListener('input', this.#onInput.bind(this));
+    this.root.removeEventListener('keydown', this.#onKeydown.bind(this));
+  }
+
+  insert(block: Block, index?: number) {
+    if (typeof index === 'number') {
+      this.content.insertBefore(block.element, this.content.children[index]);
+      this.blocks.splice(index, 0, block);
+    } else {
+      this.content.appendChild(block.element);
+      this.blocks.push(block);
     }
-  });
-}
+  }
 
-export function getChildFromBlock(block: HTMLElement) {
-  const child = block.querySelector(
-    '[data-content-editable-leaf]'
-  ) as HTMLElement | null;
-  return child;
-}
+  remove(block: Block) {
+    if (!this.blocks.includes(block)) return;
+    this.content.removeChild(block.element);
+    this.blocks.splice(this.blocks.indexOf(block), 1);
+  }
 
-export function focusBlock(block: HTMLElement) {
-  const child = block.querySelector(
-    '[data-content-editable-leaf]'
-  ) as HTMLElement | null;
-  if (!child) return;
-  child.focus();
-}
+  #onInput(_e: HTMLElementEventMap['input']) {
+    const e = _e as InputEvent;
+    const t = e.target as HTMLElement | null;
+    if (!t || t.getAttribute('data-content-editable-leaf') === null) return;
 
-export function focusBlockAtChar(block: HTMLElement, index: number) {
-  const child = getChildFromBlock(block);
-  const editable = child?.childNodes[0];
-  if (!child || !editable) return;
-  const r = document.createRange();
-  r.setStart(editable, index);
-  const s = window.getSelection();
-  s?.removeAllRanges();
-  s?.addRange(r);
-}
+    for (const i of Array.from(t.children))
+      if (i.tagName.toLowerCase() === 'br') t.removeChild(i);
 
-export function getActiveElement(): HTMLElement | null {
-  const active = document.activeElement;
-  if (!active) return null;
-  if (active.getAttribute('data-content-editable-leaf') !== null)
-    return active.parentElement;
-  else if (active.classList.contains('noss-selectable'))
-    return active as HTMLElement;
-  return null;
-}
+    if (e.inputType === 'insertParagraph') {
+      const select = window.getSelection();
+      const active = this.#getActiveBlock();
+      if (active === null) return;
+      const i = this.blocks.indexOf(active);
+      if (i === -1) return;
 
-export function getTextNodeFromBlock(block: HTMLElement): Text | null {
-  const child = block.querySelector(
-    '[data-content-editable-leaf]'
-  ) as HTMLElement;
-  if (!child) return null;
-  if (child.children[0] === child.childNodes[0]) return null;
-  return child.childNodes[0] as Text;
-}
+      const block = new Block();
+      this.insert(block, i + 1);
 
-export function getContentFromBlock(block: HTMLElement): string {
-  return getTextNodeFromBlock(block)?.data ?? '';
+      if (select && select.focusOffset === 0 && select.isCollapsed) {
+        console.log(active);
+        if (active.content !== '') {
+          block.content = active.content;
+          active.content = '';
+        }
+      } else if (t.childNodes.length > 1) {
+        const carry = t.childNodes[1];
+        t.removeChild(carry);
+        block.content = (carry as Text).data;
+      }
+
+      block.focus(0);
+    }
+
+    t.appendChild(document.createElement('br'));
+  }
+
+  #onKeydown(e: HTMLElementEventMap['keydown']) {
+    if (e.key === 'Backspace') {
+      const select = window.getSelection();
+      if (!select) return;
+      if (select.focusOffset === 0 && select.isCollapsed) {
+        const active = this.#getActiveBlock();
+        if (!active) return;
+        const i = this.blocks.indexOf(active);
+        if (i === 0) return;
+
+        const block = this.blocks[i - 1];
+        const carry = active.content;
+        const focusIndex = block.content.length;
+        if (carry !== '') block.content = block.content + carry;
+        this.remove(active);
+
+        setTimeout(() => block.focus(focusIndex), 0);
+      }
+    } else if (e.key === 'Enter' && e.ctrlKey === true) {
+      const i = this.#getActiveBlock(true);
+      const block = new Block();
+      this.insert(block, i + 1);
+      setTimeout(() => block.focus(), 0);
+    } else if (e.key === 'ArrowUp') {
+      const i = this.#getActiveBlock(true);
+      const offset = window.getSelection()?.focusOffset ?? 0;
+      const block = this.blocks[i - 1];
+      // NOT WORKING, even though offset is correct
+      if (block !== undefined) block.focus(offset);
+    } else if (e.key === 'ArrowDown') {
+      const i = this.#getActiveBlock(true);
+      const offset = window.getSelection()?.focusOffset ?? 0;
+      const block = this.blocks[i + 1];
+      // NOT WORKING, even though offset is correct
+      if (block !== undefined) block.focus(offset);
+    }
+  }
+
+  #getActiveBlock(): Block | null;
+  #getActiveBlock(index: boolean): number;
+  #getActiveBlock(index?: boolean): Block | number | null {
+    const ret = index === true ? -1 : null;
+    const ele = document.activeElement;
+    if (!ele || ele.tagName === 'BODY') return ret;
+    let block: HTMLElement;
+    if (ele.getAttribute('data-content-editable-leaf') !== null)
+      block = ele.parentElement as HTMLElement;
+    else if (ele.classList.contains('noss-selectable'))
+      block = ele as HTMLElement;
+    else return ret;
+
+    const found = this.blocks.find((e) => e.element === block);
+    if (!found) return ret;
+    if (index === true) return this.blocks.indexOf(found);
+    return found;
+  }
 }

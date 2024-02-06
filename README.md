@@ -30,12 +30,12 @@ Url for projects is similar to github
 
 # TODO
 - **Editor component**
-  - [ ] Seperate code into class to improve readability
-    - [ ] Add blocks property which are instance of `Block` class
-      - [ ] Focus method
-    - [ ] Allow for inserting new block with one function call with index
-  - [ ] Seperate blocks in divs
-    - [ ] Change div props on `contenteditable > insertParagrah`
+  - [x] Seperate code into class to improve readability
+    - [x] Add blocks property which are instance of `Block` class
+      - [x] Focus method
+    - [x] Allow for inserting new block with one function call with index
+  - [x] Seperate blocks in divs
+    - [x] Change div props on `contenteditable > insertParagrah`
     - [ ] Formatting
   - [ ] Seamless UI
   - [ ] Commands

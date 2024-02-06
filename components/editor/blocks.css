@@ -9,7 +9,7 @@
 }
 
 /* Heading 1 */
-.noss-header-block h1 {
+.noss-header-block p {
   font-size: 1.875rem;
   font-weight: 700;
 }
