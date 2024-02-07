@@ -100,15 +100,16 @@ export class Editor {
       const block = new Block();
       this.insert(block, i + 1);
       setFocus(() => block.focus());
-    } else if (e.key === 'ArrowUp') {
+    }
+    // Maybe calculate offset, so cursor stays roughly at same x coord,
+    // instead of character length base, which causes it to jump
+    else if (e.key === 'ArrowUp') {
       const i = this.#getActiveBlock(true);
       const block = this.blocks[i - 1];
-      // NOT WORKING, even though offset is correct
       if (block !== undefined) block.focus(select.focusOffset);
     } else if (e.key === 'ArrowDown') {
       const i = this.#getActiveBlock(true);
       const block = this.blocks[i + 1];
-      // NOT WORKING, even though offset is correct
       if (block !== undefined) block.focus(select.focusOffset);
     }
     // Left should go to end of previous line

@@ -35,7 +35,7 @@ export class Block {
     range.collapse(true);
 
     sel.removeAllRanges();
-    sel.addRange(range);
+    setFocus(() => sel.addRange(range));
   }
 
   get format(): Format {
