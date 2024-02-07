@@ -1,4 +1,4 @@
-import { Block } from './block';
+import { Block, setFocus } from './block';
 
 /**
  * TODO:
@@ -78,9 +78,9 @@ export class Editor {
   }
 
   #onKeydown(e: HTMLElementEventMap['keydown']) {
+    const select = window.getSelection();
+    if (!select) return;
     if (e.key === 'Backspace') {
-      const select = window.getSelection();
-      if (!select) return;
       if (select.focusOffset === 0 && select.isCollapsed) {
         const active = this.#getActiveBlock();
         if (!active) return;
@@ -93,25 +93,40 @@ export class Editor {
         if (carry !== '') block.content = block.content + carry;
         this.remove(active);
 
-        setTimeout(() => block.focus(focusIndex), 0);
+        setFocus(() => block.focus(focusIndex));
       }
     } else if (e.key === 'Enter' && e.ctrlKey === true) {
       const i = this.#getActiveBlock(true);
       const block = new Block();
       this.insert(block, i + 1);
-      setTimeout(() => block.focus(), 0);
+      setFocus(() => block.focus());
     } else if (e.key === 'ArrowUp') {
       const i = this.#getActiveBlock(true);
-      const offset = window.getSelection()?.focusOffset ?? 0;
       const block = this.blocks[i - 1];
       // NOT WORKING, even though offset is correct
-      if (block !== undefined) block.focus(offset);
+      if (block !== undefined) block.focus(select.focusOffset);
     } else if (e.key === 'ArrowDown') {
       const i = this.#getActiveBlock(true);
-      const offset = window.getSelection()?.focusOffset ?? 0;
       const block = this.blocks[i + 1];
       // NOT WORKING, even though offset is correct
-      if (block !== undefined) block.focus(offset);
+      if (block !== undefined) block.focus(select.focusOffset);
+    }
+    // Left should go to end of previous line
+    else if (
+      e.key === 'ArrowLeft' &&
+      select.focusOffset === 0 &&
+      select.isCollapsed
+    ) {
+      const i = this.#getActiveBlock(true);
+      if (i === 0) return;
+      setFocus(() => this.blocks[i - 1].focus());
+    }
+    // Right should go to start of new line
+    else if (e.key === 'ArrowRight' && select.isCollapsed) {
+      const i = this.#getActiveBlock(true);
+      if (i === -1) return;
+      if (this.blocks[i].content.length !== select.focusOffset) return;
+      if (this.blocks[i + 1]) setFocus(() => this.blocks[i + 1].focus(0));
     }
   }
 

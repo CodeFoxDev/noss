@@ -23,12 +23,14 @@ export class Block {
    */
   focus(char?: number) {
     if (this.content === '') return this.span.focus();
-    char ??= this.#content.length;
-    if (char > this.#content.length) char = this.#content.length;
+    if (char === undefined || char > this.#content.length)
+      char = this.content.length;
     if (!this.#textElement) this.#textElement = this.#createTextElement();
+
     const range = document.createRange();
     const sel = window.getSelection();
     if (!sel) return;
+
     range.setStart(this.#textElement, char);
     range.collapse(true);
 
@@ -92,4 +94,8 @@ function getClassFromFormat(format: Format): string {
   else if (format === 'h2') return 'noss-sub_header-block';
   else if (format === 'h3') return 'noss-sub_sub_header-block';
   else return `noss-${format}-block`;
+}
+
+export function setFocus(cb: () => void) {
+  setTimeout(() => cb(), 20);
 }
