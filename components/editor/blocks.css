@@ -1,3 +1,9 @@
+.noss-selectable {
+  margin: 0.25rem 0;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+}
+
 .noss-selectable,
 .noss-selectable > * {
   outline: none;
@@ -6,6 +12,11 @@
 .noss-selectable::selection,
 .noss-selectable ::selection {
   background: var(--accent-dim);
+}
+
+.noss-selectable p {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 /* Heading 1 */
