@@ -174,7 +174,7 @@ onMounted(() => {
             <IconButton icon="more_horiz" />
           </div>
         </div>
-        <div class="editor" v-bind="layout()">
+        <div class="editor" v-bind="layout()" style="overflow: hidden">
           <div class="open">
             <Editor />
           </div>
@@ -182,6 +182,7 @@ onMounted(() => {
             class="secondary"
             :style="{
               width: secondaryCollapsed ? '0px' : '320px',
+              padding: secondaryCollapsed ? '0px' : '4px',
               'flex-shrink': 0,
             }"
           >

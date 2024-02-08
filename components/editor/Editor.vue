@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import './blocks.css';
-import { Editor } from './editor';
-import { Block } from './block';
+import { Editor, Block } from '@/composables/editor';
 const placeholder = "Press '/' for commands";
 
 let editorClass: Editor;
@@ -24,12 +23,17 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="editor" ref="editor">
+  <div
+    class="editor"
+    ref="editor"
+    style="overflow-y: auto; width: 100%"
+    v-bind="layout({ justifyContent: 'center' })"
+  >
     <div class="layout-header"></div>
     <div
       class="layout-content"
       ref="content"
-      style="width: 100%; height: 200px"
+      style="max-width: 800px; width: 100%; height: 100%; padding-top: 8rem"
     ></div>
   </div>
 </template>

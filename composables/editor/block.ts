@@ -5,6 +5,8 @@ export class Block {
 
   element: HTMLDivElement;
   span: HTMLSpanElement;
+
+  lastFocus: number = 0;
   /** Can be undefined if content is empty string */
   #textElement?: Text;
   #format: Format = 'text';
@@ -19,19 +21,22 @@ export class Block {
 
   /**
    * Sets the caret at the character with index `char`
-   * @param char The character index where to focus, will be at the end if not specified
+   * @param index The character index where to focus, leave empty for the end, and set to -1 for last position
    */
-  focus(char?: number) {
-    if (this.content === '') return this.span.focus();
-    if (char === undefined || char > this.#content.length)
-      char = this.content.length;
+  focus(index?: number) {
+    if (index === undefined || index > this.#content.length)
+      index = this.content.length;
+    else if (index === -1) index = this.lastFocus;
+    console.log(index, this.lastFocus);
+
     if (!this.#textElement) this.#textElement = this.#createTextElement();
 
     const range = document.createRange();
     const sel = window.getSelection();
     if (!sel) return;
 
-    range.setStart(this.#textElement, char);
+    range.setStart(this.#textElement, index);
+    this.lastFocus = index;
     range.collapse(true);
 
     sel.removeAllRanges();

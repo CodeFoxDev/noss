@@ -1,0 +1,9 @@
+.drag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background: var(--accent-dim);
+  border-radius: 0.5rem;
+}

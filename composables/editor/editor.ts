@@ -1,4 +1,5 @@
 import { Block, setFocus } from './block';
+import { Drag } from './services/drag';
 
 /**
  * TODO:
@@ -9,12 +10,16 @@ export class Editor {
   content: HTMLElement;
   blocks: Block[] = [];
 
+  //#drag: Drag;
+
   constructor(editorRef: HTMLElement) {
     this.root = editorRef;
     this.content = this.root.children[1] as HTMLElement;
 
     this.root.addEventListener('input', this.#onInput.bind(this));
     this.root.addEventListener('keydown', this.#onKeydown.bind(this));
+
+    //this.#drag = new Drag(this.root);
   }
 
   /**
@@ -23,6 +28,8 @@ export class Editor {
   destruct() {
     this.root.removeEventListener('input', this.#onInput.bind(this));
     this.root.removeEventListener('keydown', this.#onKeydown.bind(this));
+
+    //this.#drag.destruct();
   }
 
   insert(block: Block, index?: number) {
@@ -80,55 +87,59 @@ export class Editor {
   #onKeydown(e: HTMLElementEventMap['keydown']) {
     const select = window.getSelection();
     if (!select) return;
-    if (e.key === 'Backspace') {
-      if (select.focusOffset === 0 && select.isCollapsed) {
-        const active = this.#getActiveBlock();
-        if (!active) return;
-        const i = this.blocks.indexOf(active);
-        if (i === 0) return;
+    (() => {
+      if (e.key === 'Backspace') {
+        if (select.focusOffset === 0 && select.isCollapsed) {
+          const active = this.#getActiveBlock();
+          if (!active) return;
+          const i = this.blocks.indexOf(active);
+          if (i === 0) return;
 
-        const block = this.blocks[i - 1];
-        const carry = active.content;
-        const focusIndex = block.content.length;
-        if (carry !== '') block.content = block.content + carry;
-        this.remove(active);
+          const block = this.blocks[i - 1];
+          const carry = active.content;
+          const focusIndex = block.content.length;
+          if (carry !== '') block.content = block.content + carry;
+          this.remove(active);
 
-        setFocus(() => block.focus(focusIndex));
+          setFocus(() => block.focus(focusIndex));
+        }
+      } else if (e.key === 'Enter' && e.ctrlKey === true) {
+        const i = this.#getActiveBlock(true);
+        const block = new Block();
+        this.insert(block, i + 1);
+        setFocus(() => block.focus());
       }
-    } else if (e.key === 'Enter' && e.ctrlKey === true) {
-      const i = this.#getActiveBlock(true);
-      const block = new Block();
-      this.insert(block, i + 1);
-      setFocus(() => block.focus());
-    }
-    // Maybe calculate offset, so cursor stays roughly at same x coord,
-    // instead of character length base, which causes it to jump
-    else if (e.key === 'ArrowUp') {
-      const i = this.#getActiveBlock(true);
-      const block = this.blocks[i - 1];
-      if (block !== undefined) block.focus(select.focusOffset);
-    } else if (e.key === 'ArrowDown') {
-      const i = this.#getActiveBlock(true);
-      const block = this.blocks[i + 1];
-      if (block !== undefined) block.focus(select.focusOffset);
-    }
-    // Left should go to end of previous line
-    else if (
-      e.key === 'ArrowLeft' &&
-      select.focusOffset === 0 &&
-      select.isCollapsed
-    ) {
-      const i = this.#getActiveBlock(true);
-      if (i === 0) return;
-      setFocus(() => this.blocks[i - 1].focus());
-    }
-    // Right should go to start of new line
-    else if (e.key === 'ArrowRight' && select.isCollapsed) {
-      const i = this.#getActiveBlock(true);
-      if (i === -1) return;
-      if (this.blocks[i].content.length !== select.focusOffset) return;
-      if (this.blocks[i + 1]) setFocus(() => this.blocks[i + 1].focus(0));
-    }
+      // Maybe calculate offset, so cursor stays roughly at same x coord,
+      // instead of character length base, which causes it to jump
+      else if (e.key === 'ArrowUp') {
+        const i = this.#getActiveBlock(true);
+        const block = this.blocks[i - 1];
+        const offset = select.focusOffset;
+        if (block !== undefined) block.focus(offset);
+      } else if (e.key === 'ArrowDown') {
+        const i = this.#getActiveBlock(true);
+        const block = this.blocks[i + 1];
+        const offset = select.focusOffset;
+        if (block !== undefined) block.focus(offset);
+      }
+      // Left should go to end of previous line
+      else if (
+        e.key === 'ArrowLeft' &&
+        select.focusOffset === 0 &&
+        select.isCollapsed
+      ) {
+        const i = this.#getActiveBlock(true);
+        if (i === 0) return;
+        setFocus(() => this.blocks[i - 1].focus());
+      }
+      // Right should go to start of new line
+      else if (e.key === 'ArrowRight' && select.isCollapsed) {
+        const i = this.#getActiveBlock(true);
+        if (i === -1) return;
+        if (this.blocks[i].content.length !== select.focusOffset) return;
+        if (this.blocks[i + 1]) setFocus(() => this.blocks[i + 1].focus(0));
+      }
+    })();
   }
 
   #getActiveBlock(): Block | null;

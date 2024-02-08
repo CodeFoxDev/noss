@@ -36,10 +36,10 @@ Url for projects is similar to github
     - [x] Allow for inserting new block with one function call with index
   - [x] Seperate blocks in divs
     - [x] Change div props on `contenteditable > insertParagrah`
-    - [ ] Formatting
   - [ ] Seamless UI
-  - [ ] Commands
-    - [ ] Allow changing of formatting
+  - [ ] Formatting
+    - [ ] Commands, to change block type when typing `/`
+    - [ ] Markdown support? (or just partial)
   - [ ] Context menu when text is selected
     - [ ] Show/hide when text is selected/unselected
     - [ ] Allow changing of formatting

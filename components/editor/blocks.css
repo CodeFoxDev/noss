@@ -1,3 +1,10 @@
+body[data-drag='true'] .noss-selectable,
+body[data-drag='true'] .noss-selectable > * {
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
 .noss-selectable {
   margin: 0.25rem 0;
   padding: 0.25rem;
