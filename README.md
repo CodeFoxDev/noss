@@ -34,9 +34,11 @@ Url for projects is similar to github
     - [x] Add blocks property which are instance of `Block` class
       - [x] Focus method
     - [x] Allow for inserting new block with one function call with index
+    - [ ] Add support for chromium based browsers, as they insert divs on enter, which is not accounted for
   - [x] Seperate blocks in divs
     - [x] Change div props on `contenteditable > insertParagrah`
   - [ ] Seamless UI
+    - [ ] Fix focussing issue, not always focussing on ctrl+enter and focussing on the right side
   - [ ] Formatting
     - [ ] Commands, to change block type when typing `/`
     - [ ] Markdown support? (or just partial)

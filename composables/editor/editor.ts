@@ -48,6 +48,8 @@ export class Editor {
     this.blocks.splice(this.blocks.indexOf(block), 1);
   }
 
+  /* Helper functions */
+
   #onInput(_e: HTMLElementEventMap['input']) {
     const e = _e as InputEvent;
     const t = e.target as HTMLElement | null;
@@ -67,7 +69,6 @@ export class Editor {
       this.insert(block, i + 1);
 
       if (select && select.focusOffset === 0 && select.isCollapsed) {
-        console.log(active);
         if (active.content !== '') {
           block.content = active.content;
           active.content = '';

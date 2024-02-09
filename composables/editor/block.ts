@@ -24,10 +24,10 @@ export class Block {
    * @param index The character index where to focus, leave empty for the end, and set to -1 for last position
    */
   focus(index?: number) {
+    if (this.content === '') return this.span.focus();
     if (index === undefined || index > this.#content.length)
       index = this.content.length;
     else if (index === -1) index = this.lastFocus;
-    console.log(index, this.lastFocus);
 
     if (!this.#textElement) this.#textElement = this.#createTextElement();
 
@@ -35,12 +35,15 @@ export class Block {
     const sel = window.getSelection();
     if (!sel) return;
 
+    console.log(this.#textElement, index);
     range.setStart(this.#textElement, index);
     this.lastFocus = index;
     range.collapse(true);
 
     sel.removeAllRanges();
-    setFocus(() => sel.addRange(range));
+    setFocus(() => {
+      sel.addRange(range);
+    });
   }
 
   get format(): Format {
@@ -75,9 +78,9 @@ export class Block {
   #createTextElement(str?: string): Text {
     str ??= '';
     this.#textElement = document.createTextNode(str);
-    this.element.children[0].innerHTML = '';
-    this.element.children[0].appendChild(this.#textElement);
-    this.element.children[0].appendChild(document.createElement('br'));
+    this.span.innerHTML = '';
+    this.span.appendChild(this.#textElement);
+    this.span.appendChild(document.createElement('br'));
     return this.#textElement;
   }
 }
@@ -102,5 +105,5 @@ function getClassFromFormat(format: Format): string {
 }
 
 export function setFocus(cb: () => void) {
-  setTimeout(() => cb(), 20);
+  setTimeout(() => cb(), 10);
 }

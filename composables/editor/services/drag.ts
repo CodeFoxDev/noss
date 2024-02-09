@@ -1,5 +1,5 @@
+import type { Editor } from '..';
 import './drag.css';
-import type { Ref } from 'vue';
 
 // TODO: only start custom select if mouse is not over the block it is selecting
 export class Drag {
@@ -13,7 +13,7 @@ export class Drag {
 
   #element: HTMLElement;
 
-  constructor(root: HTMLElement) {
+  constructor(root: HTMLElement, editor: Editor) {
     this.root = root;
     this.#element = createDragElement();
 
