@@ -3,29 +3,29 @@ import './blocks.css';
 import { Editor, Block } from '@/composables/editor';
 const placeholder = "Press '/' for commands";
 
-let editorClass: Editor;
+let editor: Editor;
 
-const editor = ref<HTMLDivElement>();
+const root = ref<HTMLDivElement>();
 const content = ref<HTMLDivElement>();
 
 onMounted(() => {
-  if (editor.value === undefined) return;
-  editorClass = new Editor(editor.value);
+  if (root.value === undefined) return;
+  editor = new Editor(root.value);
   // Test data
   const block = new Block();
-  editorClass.insert(block);
+  editor.insert(block);
   block.format = 'h1';
   block.content = 'Some content here, test for selection menu';
 });
 onUnmounted(() => {
-  editorClass?.destruct();
+  editor?.destruct();
 });
 </script>
 
 <template>
   <div
     class="editor"
-    ref="editor"
+    ref="root"
     style="overflow-y: auto; width: 100%"
     v-bind="layout({ justifyContent: 'center' })"
   >
